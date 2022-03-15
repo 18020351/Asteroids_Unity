@@ -7,7 +7,7 @@ public class Asteroids : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D asteroidRb;
     public Sprite[] sprites;
-    public GameManager gameManager;
+    private GameManager gameManager;
     public float size = 1;
     public float minSize = 0.5f;
     public float maxSize = 1.5f;
@@ -43,6 +43,7 @@ public class Asteroids : MonoBehaviour
             Destroy(this.gameObject);
             gameManager.AsteroidDestroyed(this);
         }
+        //Sound.soundInstance.PlayAudio(Sound.soundInstance.explosion1, 1.0f);
     }
     private void CreatSplit()
     {

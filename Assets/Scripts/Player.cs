@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+
     private Rigidbody2D playerRb;
     public Bullet bulletPrefab;
     private bool thrusting;
@@ -18,39 +19,6 @@ public class Player : MonoBehaviour
         playerRb = GetComponent<Rigidbody2D>();
         gameManager = FindObjectOfType<GameManager>();
     }
-
-
-    // void Update()
-    // {
-    //     thrusting = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow);
-    //     if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-    //     {
-    //         turnDirection = 1.0f;
-    //     }
-    //     else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-    //     {
-    //         turnDirection = -1.0f;
-    //     }
-    //     else
-    //     {
-    //         turnDirection = 0f;
-    //     }
-    //     if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
-    //     {
-    //         Shoot();
-    //     }
-    // }
-    // private void FixedUpdate()
-    // {
-    //     if (thrusting)
-    //     {
-    //         playerRb.AddForce(transform.up * thrustSpeed);
-    //     }
-    //     if (turnDirection != 0)
-    //     {
-    //         playerRb.AddTorque(turnDirection * turnSpeed);
-    //     }
-    // }
     private void Start()
     {
 
@@ -60,25 +28,47 @@ public class Player : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
         playerRb.AddForce(transform.up * verticalInput * thrustSpeed * Time.deltaTime);
-        playerRb.AddTorque(horizontalInput * turnSpeed * Time.deltaTime);
+
+        //playerRb.AddTorque(horizontalInput * turnSpeed * Time.deltaTime);
+        //Get the Screen positions of the object
+        Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
+
+        //Get the Screen position of the mouse
+        Vector2 mouseOnScreen = (Vector2)Camera.main.ScreenToViewportPoint(Input.mousePosition);
+
+        //Get the angle between the points
+        float angle = AngleBetweenTwoPoints(positionOnScreen, mouseOnScreen);
+
+        //Ta Daaa
+        transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle));
+
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
         {
             Shoot();
         }
     }
+    float AngleBetweenTwoPoints(Vector3 a, Vector3 b)
+    {
+        return Mathf.Atan2(a.y - b.y, a.x - b.x) * Mathf.Rad2Deg;
+    }
     private void Shoot()
     {
         Bullet bullet = Instantiate(this.bulletPrefab, this.transform.position, this.transform.rotation);
         bullet.Project(this.transform.up);
+        // playAudio.PlayOneShot(shootSound, 1.0f);
+        Sound.soundInstance.PlayAudio(Sound.soundInstance.shootAudio, 1.0f);
     }
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Asteroid"))
         {
+            //playAudio.PlayOneShot(crashSound, 1.0f);
+            Sound.soundInstance.PlayAudio(Sound.soundInstance.crashAudio, 1.0f);
             playerRb.velocity = Vector3.zero;
             playerRb.angularVelocity = 0.0f;
-            this.gameObject.SetActive(false);
             gameManager.PlayerDied();
+            this.gameObject.SetActive(false);
         }
     }
+
 }

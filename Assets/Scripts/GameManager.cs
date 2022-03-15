@@ -53,14 +53,17 @@ public class GameManager : MonoBehaviour
         if (asteroids.size < 0.75f)
         {
             this.score += 100;
+            Sound.soundInstance.PlayAudio(Sound.soundInstance.explosion3, 1.0f);
         }
         else if (asteroids.size < 1.2f)
         {
             this.score += 50;
+            Sound.soundInstance.PlayAudio(Sound.soundInstance.explosion1, 1.0f);
         }
         else
         {
             this.score += 25;
+            Sound.soundInstance.PlayAudio(Sound.soundInstance.explosion2, 1.0f);
         }
     }
     private void Update()
