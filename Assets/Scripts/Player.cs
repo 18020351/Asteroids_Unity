@@ -10,41 +10,60 @@ public class Player : MonoBehaviour
     private float turnDirection;
     public float thrustSpeed;
     public float turnSpeed;
+    private GameManager gameManager;
+    private float horizontalInput;
+    private float verticalInput;
     private void Awake()
     {
         playerRb = GetComponent<Rigidbody2D>();
+        gameManager = FindObjectOfType<GameManager>();
     }
 
-    // Update is called once per frame
-    void Update()
+
+    // void Update()
+    // {
+    //     thrusting = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow);
+    //     if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+    //     {
+    //         turnDirection = 1.0f;
+    //     }
+    //     else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+    //     {
+    //         turnDirection = -1.0f;
+    //     }
+    //     else
+    //     {
+    //         turnDirection = 0f;
+    //     }
+    //     if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
+    //     {
+    //         Shoot();
+    //     }
+    // }
+    // private void FixedUpdate()
+    // {
+    //     if (thrusting)
+    //     {
+    //         playerRb.AddForce(transform.up * thrustSpeed);
+    //     }
+    //     if (turnDirection != 0)
+    //     {
+    //         playerRb.AddTorque(turnDirection * turnSpeed);
+    //     }
+    // }
+    private void Start()
     {
-        thrusting = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow);
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-        {
-            turnDirection = 1.0f;
-        }
-        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-        {
-            turnDirection = -1.0f;
-        }
-        else
-        {
-            turnDirection = 0f;
-        }
+
+    }
+    private void Update()
+    {
+        horizontalInput = Input.GetAxis("Horizontal");
+        verticalInput = Input.GetAxis("Vertical");
+        playerRb.AddForce(transform.up * verticalInput * thrustSpeed * Time.deltaTime);
+        playerRb.AddTorque(horizontalInput * turnSpeed * Time.deltaTime);
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
         {
             Shoot();
-        }
-    }
-    private void FixedUpdate()
-    {
-        if (thrusting)
-        {
-            playerRb.AddForce(transform.up * thrustSpeed);
-        }
-        if (turnDirection != 0)
-        {
-            playerRb.AddTorque(turnDirection * turnSpeed);
         }
     }
     private void Shoot()
@@ -59,6 +78,7 @@ public class Player : MonoBehaviour
             playerRb.velocity = Vector3.zero;
             playerRb.angularVelocity = 0.0f;
             this.gameObject.SetActive(false);
+            gameManager.PlayerDied();
         }
     }
 }
