@@ -29,7 +29,7 @@ public class Player : MonoBehaviour
         verticalInput = Input.GetAxis("Vertical");
         playerRb.AddForce(transform.up * verticalInput * thrustSpeed * Time.deltaTime);
 
-        //playerRb.AddTorque(horizontalInput * turnSpeed * Time.deltaTime);
+        // playerRb.AddTorque(horizontalInput * turnSpeed * Time.deltaTime);
         //Get the Screen positions of the object
         Vector2 positionOnScreen = Camera.main.WorldToViewportPoint(transform.position);
 
@@ -41,6 +41,7 @@ public class Player : MonoBehaviour
 
         //Ta Daaa
         transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle));
+
 
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
         {
